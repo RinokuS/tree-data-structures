@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="gdal_example_cmake"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;CMake Files\cmake\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/Users/rinokus/Documents/Projects/my-forest/RTree (Without implementation)/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j16 -f &quot;/Users/rinokus/Documents/Projects/my-forest/RTree\ (Without\ implementation)/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j16 -f &quot;/Users/rinokus/Documents/Projects/my-forest/RTree\ (Without\ implementation)/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j16 -f &quot;/Users/rinokus/Documents/Projects/my-forest/RTree\ (Without\ implementation)/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j16 -f &quot;/Users/rinokus/Documents/Projects/my-forest/RTree\ (Without\ implementation)/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/Users/rinokus/Documents/Projects/my-forest/RTree (Without implementation)/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j16 -f &quot;/Users/rinokus/Documents/Projects/my-forest/RTree\ (Without\ implementation)/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j16 -f &quot;/Users/rinokus/Documents/Projects/my-forest/RTree\ (Without\ implementation)/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j16 -f &quot;/Users/rinokus/Documents/Projects/my-forest/RTree\ (Without\ implementation)/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j16 -f &quot;/Users/rinokus/Documents/Projects/my-forest/RTree\ (Without\ implementation)/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/Users/rinokus/Documents/Projects/my-forest/RTree (Without implementation)/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j16 -f &quot;/Users/rinokus/Documents/Projects/my-forest/RTree\ (Without\ implementation)/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j16 -f &quot;/Users/rinokus/Documents/Projects/my-forest/RTree\ (Without\ implementation)/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j16 -f &quot;/Users/rinokus/Documents/Projects/my-forest/RTree\ (Without\ implementation)/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j16 -f &quot;/Users/rinokus/Documents/Projects/my-forest/RTree\ (Without\ implementation)/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="gdal_example_cmake_main">
+				<Option output="/Users/rinokus/Documents/Projects/my-forest/RTree (Without implementation)/cmake-build-debug/gdal_example_cmake_main" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/rinokus/Documents/Projects/my-forest/RTree (Without implementation)/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/11.0.3/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j16 -f &quot;/Users/rinokus/Documents/Projects/my-forest/RTree\ (Without\ implementation)/cmake-build-debug/Makefile&quot;  VERBOSE=1 gdal_example_cmake_main"/>
+					<CompileFile command="/usr/bin/make -j16 -f &quot;/Users/rinokus/Documents/Projects/my-forest/RTree\ (Without\ implementation)/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j16 -f &quot;/Users/rinokus/Documents/Projects/my-forest/RTree\ (Without\ implementation)/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j16 -f &quot;/Users/rinokus/Documents/Projects/my-forest/RTree\ (Without\ implementation)/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="gdal_example_cmake_main/fast">
+				<Option output="/Users/rinokus/Documents/Projects/my-forest/RTree (Without implementation)/cmake-build-debug/gdal_example_cmake_main" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/rinokus/Documents/Projects/my-forest/RTree (Without implementation)/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/11.0.3/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j16 -f &quot;/Users/rinokus/Documents/Projects/my-forest/RTree\ (Without\ implementation)/cmake-build-debug/Makefile&quot;  VERBOSE=1 gdal_example_cmake_main/fast"/>
+					<CompileFile command="/usr/bin/make -j16 -f &quot;/Users/rinokus/Documents/Projects/my-forest/RTree\ (Without\ implementation)/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j16 -f &quot;/Users/rinokus/Documents/Projects/my-forest/RTree\ (Without\ implementation)/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j16 -f &quot;/Users/rinokus/Documents/Projects/my-forest/RTree\ (Without\ implementation)/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="MySolution">
+				<Option output="/Users/rinokus/Documents/Projects/my-forest/RTree (Without implementation)/cmake-build-debug/MySolution" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/rinokus/Documents/Projects/my-forest/RTree (Without implementation)/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/11.0.3/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j16 -f &quot;/Users/rinokus/Documents/Projects/my-forest/RTree\ (Without\ implementation)/cmake-build-debug/Makefile&quot;  VERBOSE=1 MySolution"/>
+					<CompileFile command="/usr/bin/make -j16 -f &quot;/Users/rinokus/Documents/Projects/my-forest/RTree\ (Without\ implementation)/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j16 -f &quot;/Users/rinokus/Documents/Projects/my-forest/RTree\ (Without\ implementation)/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j16 -f &quot;/Users/rinokus/Documents/Projects/my-forest/RTree\ (Without\ implementation)/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="MySolution/fast">
+				<Option output="/Users/rinokus/Documents/Projects/my-forest/RTree (Without implementation)/cmake-build-debug/MySolution" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/rinokus/Documents/Projects/my-forest/RTree (Without implementation)/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/11.0.3/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j16 -f &quot;/Users/rinokus/Documents/Projects/my-forest/RTree\ (Without\ implementation)/cmake-build-debug/Makefile&quot;  VERBOSE=1 MySolution/fast"/>
+					<CompileFile command="/usr/bin/make -j16 -f &quot;/Users/rinokus/Documents/Projects/my-forest/RTree\ (Without\ implementation)/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j16 -f &quot;/Users/rinokus/Documents/Projects/my-forest/RTree\ (Without\ implementation)/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j16 -f &quot;/Users/rinokus/Documents/Projects/my-forest/RTree\ (Without\ implementation)/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/Users/rinokus/Documents/Projects/my-forest/RTree (Without implementation)/main.cpp">
+			<Option target="gdal_example_cmake_main"/>
+			<Option target="MySolution"/>
+		</Unit>
+		<Unit filename="/Users/rinokus/Documents/Projects/my-forest/RTree (Without implementation)/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/Users/rinokus/Documents/Projects/my-forest/RTree (Without implementation)/cmake/Core.cmake">
+			<Option virtualFolder="CMake Files\cmake\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>
