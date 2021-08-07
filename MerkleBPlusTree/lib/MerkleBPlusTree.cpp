@@ -2,7 +2,7 @@
 #include <cstdlib>
 #include <cassert>
 #include <string>
-//#include "cryptopp/blake2.h"
+#include "cryptopp/blake2.h"
 
 #include "MerkleBPlusTree.h"
 
@@ -22,47 +22,33 @@ static inline int is_leaf(struct bplus_node *node)
 }
 
 static inline void hash_leaf(bplus_leaf *node) {
-//    CryptoPP::BLAKE2b blake_hasher;
-//    std::string helper;
-//
-//    for (int i = 0; i < node->count; ++i) {
-//        helper = std::to_string(node->data[i]);
-//        unsigned char buf[helper.size()];
-//        strcpy((char*) buf, helper.c_str());
-//
-//        blake_hasher.Update(buf, helper.size());
-//    }
-//
-//    node->hash.resize(blake_hasher.DigestSize());
-//    blake_hasher.Final((unsigned char*) &node->hash[0]);
-    std::string helper;
-
-    for (int i = 0; i <= node->count; ++i) {
-        helper += std::to_string(node->data[i]);
-    }
-
-    node->hash = helper;
-}
-
-static inline void hash_non_leaf(bplus_non_leaf *node) {
-//    CryptoPP::BLAKE2b blake_hasher;
-//
-//    for (int i = 0; i < node->count; ++i) {
-//        unsigned char buf[node->sub_ptr[i]->hash.size()];
-//        strcpy((char*) buf, node->sub_ptr[i]->hash.c_str());
-//
-//        blake_hasher.Update(buf, node->sub_ptr[i]->hash.size());
-//    }
-//
-//    node->hash.resize(blake_hasher.DigestSize());
-//    blake_hasher.Final((unsigned char*) &node->hash[0]);
+    CryptoPP::BLAKE2b blake_hasher;
     std::string helper;
 
     for (int i = 0; i < node->count; ++i) {
-        helper += node->sub_ptr[i]->hash;
+        helper = std::to_string(node->data[i]);
+        unsigned char buf[helper.size()];
+        strcpy((char*) buf, helper.c_str());
+
+        blake_hasher.Update(buf, helper.size());
     }
 
-    node->hash = helper;
+    node->hash.resize(blake_hasher.DigestSize());
+    blake_hasher.Final((unsigned char*) &node->hash[0]);
+}
+
+static inline void hash_non_leaf(bplus_non_leaf *node) {
+    CryptoPP::BLAKE2b blake_hasher;
+
+    for (int i = 0; i < node->count; ++i) {
+        unsigned char buf[node->sub_ptr[i]->hash.size()];
+        strcpy((char*) buf, node->sub_ptr[i]->hash.c_str());
+
+        blake_hasher.Update(buf, node->sub_ptr[i]->hash.size());
+    }
+
+    node->hash.resize(blake_hasher.DigestSize());
+    blake_hasher.Final((unsigned char*) &node->hash[0]);
 }
 
 static key_t key_binary_search(key_t *arr, int len, key_t target)
