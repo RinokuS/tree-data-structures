@@ -163,8 +163,17 @@ static void bplus_tree_hash_test() {
 
         assert(tree_a->root->hash == tree_b->root->hash);
     }
-    bplus_tree_dump(tree_a);
     assert(tree_a->root->hash == tree_b->root->hash);
+
+    for (i = 1; i <= max_key; i++) {
+        tree_a->insert(i, i);
+    }
+    for (i = max_key; i > 0; i--) {
+        if (i == 11)
+            std::cout << "";
+        tree_b->insert(i, i);
+    }
+    assert(tree_a->root->hash != tree_b->root->hash);
 }
 
 static void bplus_tree_normal_test(void)

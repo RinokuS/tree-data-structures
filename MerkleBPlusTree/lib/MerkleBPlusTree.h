@@ -1,7 +1,8 @@
 #pragma once
 
 #include <string>
-#include "cryptopp/blake2.h"
+#include <vector>
+//#include "cryptopp/blake2.h"
 
 #ifndef _BPLUS_TREE_H
 #define _BPLUS_TREE_H
@@ -90,6 +91,11 @@ struct bplus_node {
 };
 
 template <typename K, typename V>
+bool operator==(bplus_node<K, V> *a, bplus_node<K, V> *b) {
+    return a->hash == b->hash;
+}
+
+template <typename K, typename V>
 struct bplus_non_leaf : public bplus_node<K, V> {
     K key[BPLUS_MAX_ORDER - 1];
     bplus_node<K, V> *sub_ptr[BPLUS_MAX_ORDER];
@@ -103,6 +109,36 @@ struct bplus_leaf : public bplus_node<K, V> {
 
 template <typename K, typename V>
 class bplus_tree {
+    using change_set = std::vector<std::pair<bplus_node<K, V> *, bplus_node<K, V> *>>;
+
+private:
+    static inline void get_nodes_diff(change_set &different_nodes,
+                                      bplus_node<K, V> *f, bplus_node<K, V> *s) {
+        if (f == s)
+            return;
+        if (is_leaf(f) || is_leaf(s)) {
+            different_nodes.push_back(std::make_pair(f, s));
+            return;
+        }
+
+        int n = std::min(f->count, s->count);
+
+        for (int i = 0; i < n; ++i) {
+            get_nodes_diff(different_nodes,
+                           ((bplus_non_leaf<K, V> *)f)->sub_ptr[i],
+                           ((bplus_non_leaf<K, V> *)s)->sub_ptr[i]);
+        }
+
+        if (f->count > s->count) {
+            for (int i = n; i < f->count; ++i) {
+                different_nodes.push_back(std::make_pair(f, nullptr));
+            }
+        } else {
+            for (int i = n; i < s->count; ++i) {
+                different_nodes.push_back(std::make_pair(nullptr, s));
+            }
+        }
+    }
 public:
     int order;
     int entries;
@@ -126,10 +162,17 @@ public:
     int remove(K key) {
         return bplus_tree_delete(this, key);
     }
+
+    change_set get_change_set(bplus_tree<K, V> *other) {
+        change_set different_nodes;
+        get_nodes_diff(different_nodes, root, other->root);
+
+        return different_nodes;
+    }
 };
 
 enum {
-    BPLUS_TREE_LEAF,
+    BPLUS_TREE_LEAF = 0,
     BPLUS_TREE_NON_LEAF = 1,
 };
 
@@ -146,34 +189,48 @@ static inline int is_leaf(bplus_node<K, V> *node)
 
 template <typename K, typename V>
 static inline void hash_leaf(bplus_leaf<K, V> *node) {
-    CryptoPP::BLAKE2b blake_hasher;
-    std::string helper;
+//    CryptoPP::BLAKE2b blake_hasher;
+//    std::string helper;
+//
+//    for (int i = 0; i < node->count; ++i) {
+//        helper = std::to_string(node->data[i]);
+//        unsigned char buf[helper.size()];
+//        strcpy((char*) buf, helper.c_str());
+//
+//        blake_hasher.Update(buf, helper.size());
+//    }
+//
+//    node->hash.resize(blake_hasher.DigestSize());
+//    blake_hasher.Final((unsigned char*) &node->hash[0]);
+    std::string helper = std::to_string(node->count);
 
     for (int i = 0; i < node->count; ++i) {
-        helper = std::to_string(node->data[i]);
-        unsigned char buf[helper.size()];
-        strcpy((char*) buf, helper.c_str());
-
-        blake_hasher.Update(buf, helper.size());
+        helper += std::to_string(node->data[i]);
     }
 
-    node->hash.resize(blake_hasher.DigestSize());
-    blake_hasher.Final((unsigned char*) &node->hash[0]);
+    node->hash = helper;
 }
 
 template <typename K, typename V>
 static inline void hash_non_leaf(bplus_non_leaf<K, V> *node) {
-    CryptoPP::BLAKE2b blake_hasher;
+//    CryptoPP::BLAKE2b blake_hasher;
+//
+//    for (int i = 0; i < node->count; ++i) {
+//        unsigned char buf[node->sub_ptr[i]->hash.size()];
+//        strcpy((char*) buf, node->sub_ptr[i]->hash.c_str());
+//
+//        blake_hasher.Update(buf, node->sub_ptr[i]->hash.size());
+//    }
+//
+//    node->hash.resize(blake_hasher.DigestSize());
+//    blake_hasher.Final((unsigned char*) &node->hash[0]);
+    std::string helper = std::to_string(node->count);
 
     for (int i = 0; i < node->count; ++i) {
-        unsigned char buf[node->sub_ptr[i]->hash.size()];
-        strcpy((char*) buf, node->sub_ptr[i]->hash.c_str());
-
-        blake_hasher.Update(buf, node->sub_ptr[i]->hash.size());
+        helper += node->sub_ptr[i]->hash;
     }
 
-    node->hash.resize(blake_hasher.DigestSize());
-    blake_hasher.Final((unsigned char*) &node->hash[0]);
+    node->hash = helper;
 }
 
 template <typename K>
@@ -1132,13 +1189,13 @@ static void key_print(bplus_node<K, V> *node)
     int i;
     if (is_leaf(node)) {
         auto leaf = (bplus_leaf<K, V> *)node;
-        printf("leaf:");
+        printf("leaf (%s):", leaf->hash.c_str());
         for (i = 0; i < leaf->count; i++) {
             printf(" %d", leaf->key[i]);
         }
     } else {
         auto non_leaf = (bplus_non_leaf<K, V> *)node;
-        printf("node:");
+        printf("node (%s):", non_leaf->hash.c_str());
         for (i = 0; i < non_leaf->count - 1; i++) {
             printf(" %d", non_leaf->key[i]);
         }
