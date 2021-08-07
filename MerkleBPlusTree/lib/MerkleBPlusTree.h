@@ -121,6 +121,10 @@ template <typename K, typename V>
 class bplus_tree {
     using change_set = std::vector<std::pair<bplus_node<K, V> *, bplus_node<K, V> *>>;
 private:
+    int order;
+    int entries;
+    list_head list[BPLUS_MAX_LEVEL];
+
     bplus_tree() = default;
 
 private:
@@ -991,6 +995,9 @@ private:
     }
 
 public:
+    int level;
+    bplus_node<K, V> *root;
+
     static bplus_tree* init_tree(int order_, int entries_) {
         /* The max order of non leaf nodes must be more than two */
         assert(BPLUS_MAX_ORDER > BPLUS_MIN_ORDER);
@@ -1013,12 +1020,6 @@ public:
     }
 
 public:
-    int order;
-    int entries;
-    int level;
-    bplus_node<K, V> *root;
-    list_head list[BPLUS_MAX_LEVEL];
-
     int search(K key) {
         V data = bplus_tree_search(this, key);
         if (data) {
