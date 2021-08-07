@@ -142,7 +142,7 @@ static void bplus_tree_hash_test() {
 
     fprintf(stderr, "\n>>> B+tree hash test.\n");
 
-    /* Init b+tree */
+    /* Init b+trees */
     tree_a = bplus_tree_init<int, int>(config.order, config.entries);
     tree_b = bplus_tree_init<int, int>(config.order, config.entries);
     if (!tree_a || !tree_b) {
@@ -169,23 +169,57 @@ static void bplus_tree_hash_test() {
         tree_a->insert(i, i);
     }
     for (i = max_key; i > 0; i--) {
-        if (i == 11)
-            std::cout << "";
         tree_b->insert(i, i);
     }
     assert(tree_a->root->hash != tree_b->root->hash);
 }
 
-static void bplus_tree_normal_test(void)
+static void get_change_set_test() {
+    int i, max_key = 100;
+
+    bplus_tree<int, int> *tree_a;
+    bplus_tree<int, int> *tree_b;
+    bplus_tree_config config{7, 10};
+
+    fprintf(stderr, "\n>>> B+tree change_set test.\n");
+
+    /* Init b+trees */
+    tree_a = bplus_tree_init<int, int>(config.order, config.entries);
+    tree_b = bplus_tree_init<int, int>(config.order, config.entries);
+    if (!tree_a || !tree_b) {
+        fprintf(stderr, "Init failure!\n");
+        exit(-1);
+    }
+
+    for (i = 1; i <= max_key; i++) {
+        tree_a->insert(i, i);
+        tree_b->insert(i, i);
+
+        auto change_set = tree_a->get_change_set(tree_b);
+        assert(change_set.empty());
+    }
+
+    tree_a->remove(100);
+    auto change_set = tree_a->get_change_set(tree_b);
+    assert(change_set.size() == 1);
+
+    for (i = max_key; i > 0; i--) {
+        tree_a->remove(i);
+        tree_b->remove(i);
+
+        change_set = tree_a->get_change_set(tree_b);
+        assert(change_set.empty());
+    }
+}
+
+static void bplus_tree_normal_test()
 {
     bplus_tree<int, int> *tree;
-    bplus_tree_config config;
+    bplus_tree_config config{7, 10};
 
     fprintf(stderr, "\n>>> B+tree normal test.\n");
 
     /* Init b+tree */
-    config.order = 7;
-    config.entries = 10;
     tree = bplus_tree_init<int, int>(config.order, config.entries);
     if (!tree) {
         fprintf(stderr, "Init failure!\n");
@@ -205,6 +239,7 @@ static void bplus_tree_normal_test(void)
 int main() {
     bplus_tree_normal_test();
     bplus_tree_hash_test();
-    //bplus_tree_abnormal_test();
+    get_change_set_test();
+
     return 0;
 }
