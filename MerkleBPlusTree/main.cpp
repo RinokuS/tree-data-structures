@@ -25,7 +25,7 @@ static void bplus_tree_get_put_test(bplus_tree<int, int> *tree)
     tree->insert(44, 44);
     tree->insert(68, 68);
     tree->insert(74, 74);
-    bplus_tree_dump(tree);
+    tree->print();
 
     tree->insert(10, 10);
     tree->insert(15, 15);
@@ -43,7 +43,7 @@ static void bplus_tree_get_put_test(bplus_tree<int, int> *tree)
     tree->insert(78, 78);
     tree->insert(81, 81);
     tree->insert(84, 84);
-    bplus_tree_dump(tree);
+    tree->print();
 
     fprintf(stderr, "key:24 data:%d\n", tree->search(24));
     fprintf(stderr, "key:72 data:%d\n", tree->search(72));
@@ -66,7 +66,7 @@ static void bplus_tree_get_put_test(bplus_tree<int, int> *tree)
     for (i = 1; i <= 100; i++) {
         tree->remove(i);
     }
-    bplus_tree_dump(tree);
+    tree->print();
 
     /* Not found */
     fprintf(stderr, "key:100 data:%d\n", tree->search(100));
@@ -83,7 +83,7 @@ static void bplus_tree_insert_delete_test(bplus_tree<int, int> *tree)
     for (i = 1; i <= max_key; i++) {
         tree->insert(i, i);
     }
-    bplus_tree_dump(tree);
+    tree->print();
 
     fprintf(stderr, "\n-- Delete 1 to %d, dump:\n", max_key);
     for (i = 1; i <= max_key; i++) {
@@ -91,46 +91,46 @@ static void bplus_tree_insert_delete_test(bplus_tree<int, int> *tree)
             std::cout << "";
         tree->remove(i);
     }
-    bplus_tree_dump(tree);
+    tree->print();
 
     /* Ordered insertion and reversed deletion */
     fprintf(stderr, "\n-- Insert 1 to %d, dump:\n", max_key);
     for (i = 1; i <= max_key; i++) {
         tree->insert(i, i);
     }
-    bplus_tree_dump(tree);
+    tree->print();
 
     fprintf(stderr, "\n-- Delete %d to 1, dump:\n", max_key);
     while (--i > 0) {
         tree->remove(i);
     }
-    bplus_tree_dump(tree);
+    tree->print();
 
     /* Reversed insertion and ordered deletion */
     fprintf(stderr, "\n-- Insert %d to 1, dump:\n", max_key);
     for (i = max_key; i > 0; i--) {
         tree->insert(i, i);
     }
-    bplus_tree_dump(tree);
+    tree->print();
 
     fprintf(stderr, "\n-- Delete 1 to %d, dump:\n", max_key);
     for (i = 1; i <= max_key; i++) {
         tree->remove(i);
     }
-    bplus_tree_dump(tree);
+    tree->print();
 
     /* Reversed insertion and reversed deletion */
     fprintf(stderr, "\n-- Insert %d to 1, dump:\n", max_key);
     for (i = max_key; i > 0; i--) {
         tree->insert(i, i);
     }
-    bplus_tree_dump(tree);
+    tree->print();
 
     fprintf(stderr, "\n-- Delete %d to 1, dump:\n", max_key);
     for (i = max_key; i > 0; i--) {
         tree->remove(i);
     }
-    bplus_tree_dump(tree);
+    tree->print();
 }
 
 static void bplus_tree_hash_test() {
@@ -143,12 +143,8 @@ static void bplus_tree_hash_test() {
     fprintf(stderr, "\n>>> B+tree hash test.\n");
 
     /* Init b+trees */
-    tree_a = bplus_tree_init<int, int>(config.order, config.entries);
-    tree_b = bplus_tree_init<int, int>(config.order, config.entries);
-    if (!tree_a || !tree_b) {
-        fprintf(stderr, "Init failure!\n");
-        exit(-1);
-    }
+    tree_a = bplus_tree<int, int>::init_tree(config.order, config.entries);
+    tree_b = bplus_tree<int, int>::init_tree(config.order, config.entries);
 
     for (i = 1; i <= max_key; i++) {
         tree_a->insert(i, i);
@@ -172,6 +168,9 @@ static void bplus_tree_hash_test() {
         tree_b->insert(i, i);
     }
     assert(tree_a->root->hash != tree_b->root->hash);
+
+    delete tree_a;
+    delete tree_b;
 }
 
 static void get_change_set_test() {
@@ -184,12 +183,8 @@ static void get_change_set_test() {
     fprintf(stderr, "\n>>> B+tree change_set test.\n");
 
     /* Init b+trees */
-    tree_a = bplus_tree_init<int, int>(config.order, config.entries);
-    tree_b = bplus_tree_init<int, int>(config.order, config.entries);
-    if (!tree_a || !tree_b) {
-        fprintf(stderr, "Init failure!\n");
-        exit(-1);
-    }
+    tree_a = bplus_tree<int, int>::init_tree(config.order, config.entries);
+    tree_b = bplus_tree<int, int>::init_tree(config.order, config.entries);
 
     for (i = 1; i <= max_key; i++) {
         tree_a->insert(i, i);
@@ -210,6 +205,9 @@ static void get_change_set_test() {
         change_set = tree_a->get_change_set(tree_b);
         assert(change_set.empty());
     }
+
+    delete tree_a;
+    delete tree_b;
 }
 
 static void bplus_tree_normal_test()
@@ -220,11 +218,7 @@ static void bplus_tree_normal_test()
     fprintf(stderr, "\n>>> B+tree normal test.\n");
 
     /* Init b+tree */
-    tree = bplus_tree_init<int, int>(config.order, config.entries);
-    if (!tree) {
-        fprintf(stderr, "Init failure!\n");
-        exit(-1);
-    }
+    tree = bplus_tree<int, int>::init_tree(config.order, config.entries);
 
     /* getter and setter test */
     bplus_tree_get_put_test(tree);
@@ -233,7 +227,7 @@ static void bplus_tree_normal_test()
     bplus_tree_insert_delete_test(tree);
 
     /* Deinit b+tree */
-    bplus_tree_deinit(tree);
+    delete tree;
 }
 
 int main() {
