@@ -1,6 +1,6 @@
-/*
- * Copyright (C) 2015, Leo Ma <begeekmyfriend@gmail.com>
- */
+#pragma once
+
+#include <string>
 
 #ifndef _BPLUS_TREE_H
 #define _BPLUS_TREE_H
@@ -79,27 +79,18 @@ static inline int list_is_last(struct list_head *link, struct list_head *head)
 struct bplus_node {
     int type;
     int parent_key_idx;
+    std::string hash;
     struct bplus_non_leaf *parent;
     struct list_head link;
     int count;
 };
 
-struct bplus_non_leaf {
-    int type;
-    int parent_key_idx;
-    struct bplus_non_leaf *parent;
-    struct list_head link;
-    int children;
+struct bplus_non_leaf : public bplus_node {
     int key[BPLUS_MAX_ORDER - 1];
     struct bplus_node *sub_ptr[BPLUS_MAX_ORDER];
 };
 
-struct bplus_leaf {
-    int type;
-    int parent_key_idx;
-    struct bplus_non_leaf *parent;
-    struct list_head link;
-    int entries;
+struct bplus_leaf : public bplus_node {
     int key[BPLUS_MAX_ENTRIES];
     int data[BPLUS_MAX_ENTRIES];
 };

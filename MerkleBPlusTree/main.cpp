@@ -1,6 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-
+#include <iostream>
 #include "lib/MerkleBPlusTree.h"
 
 struct bplus_tree_config {
@@ -89,6 +87,8 @@ static void bplus_tree_insert_delete_test(struct bplus_tree *tree)
 
     fprintf(stderr, "\n-- Delete 1 to %d, dump:\n", max_key);
     for (i = 1; i <= max_key; i++) {
+        if (i == 100)
+            std::cout << "";
         bplus_tree_put(tree, i, 0);
     }
     bplus_tree_dump(tree);
@@ -133,6 +133,40 @@ static void bplus_tree_insert_delete_test(struct bplus_tree *tree)
     bplus_tree_dump(tree);
 }
 
+static void bplus_tree_hash_test() {
+    int i, max_key = 100;
+
+    bplus_tree *tree_a;
+    bplus_tree *tree_b;
+    bplus_tree_config config{7, 10};
+
+    fprintf(stderr, "\n>>> B+tree hash test.\n");
+
+    /* Init b+tree */
+    tree_a = bplus_tree_init(config.order, config.entries);
+    tree_b = bplus_tree_init(config.order, config.entries);
+    if (!tree_a || !tree_b) {
+        fprintf(stderr, "Init failure!\n");
+        exit(-1);
+    }
+
+    for (i = 1; i <= max_key; i++) {
+        bplus_tree_put(tree_a, i, i);
+        bplus_tree_put(tree_b, i, i);
+
+        assert(tree_a->root->hash == tree_b->root->hash);
+    }
+
+    for (i = 1; i < max_key; i++) {
+        bplus_tree_put(tree_a, i, 0);
+        bplus_tree_put(tree_b, i, 0);
+
+        assert(tree_a->root->hash == tree_b->root->hash);
+    }
+    bplus_tree_dump(tree_a);
+    assert(tree_a->root->hash == tree_b->root->hash);
+}
+
 static void bplus_tree_normal_test(void)
 {
     struct bplus_tree *tree;
@@ -144,7 +178,7 @@ static void bplus_tree_normal_test(void)
     config.order = 7;
     config.entries = 10;
     tree = bplus_tree_init(config.order, config.entries);
-    if (tree == NULL) {
+    if (!tree) {
         fprintf(stderr, "Init failure!\n");
         exit(-1);
     }
@@ -159,9 +193,9 @@ static void bplus_tree_normal_test(void)
     bplus_tree_deinit(tree);
 }
 
-int main(void)
-{
+int main() {
     bplus_tree_normal_test();
+    bplus_tree_hash_test();
     //bplus_tree_abnormal_test();
     return 0;
 }
