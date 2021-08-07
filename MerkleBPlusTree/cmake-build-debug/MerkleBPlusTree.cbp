@@ -80,12 +80,6 @@
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/Users/rinokus/Documents/Projects/my-forest/MerkleBPlusTree/lib/MerkleBPlusTree.cpp">
-			<Option target="MerkleBPlusTree"/>
-		</Unit>
-		<Unit filename="/Users/rinokus/Documents/Projects/my-forest/MerkleBPlusTree/lib/MerkleBPlusTree.h">
-			<Option target="MerkleBPlusTree"/>
-		</Unit>
 		<Unit filename="/Users/rinokus/Documents/Projects/my-forest/MerkleBPlusTree/main.cpp">
 			<Option target="MerkleBPlusTree"/>
 		</Unit>
