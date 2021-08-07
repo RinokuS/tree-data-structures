@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <optional>
 #include "cryptopp/blake2.h"
 
 #ifndef _BPLUS_TREE_H
@@ -242,16 +243,18 @@ private:
         delete node;
     }
 
-    static int bplus_tree_search(bplus_tree<K, V> *tree, K key)
+    static std::optional<V> bplus_tree_search(bplus_tree<K, V> *tree, K key)
     {
-        int i, ret = -1;
+        int i;
+        std::optional<V> ret;
         bplus_node<K, V> *node = tree->root;
 
         while (node) {
             if (is_leaf(node)) {
                 auto ln = (bplus_leaf<K, V> *)node;
                 i = key_binary_search(ln->key, ln->count, key);
-                ret = i >= 0 ? ln->data[i] : 0;
+                if (i >= 0)
+                    ret = ln->data[i];
                 break;
             } else {
                 auto nln = (bplus_non_leaf<K, V> *)node;
@@ -296,7 +299,7 @@ private:
         }
     }
 
-    static int non_leaf_split_left(bplus_non_leaf<K, V> *node, bplus_non_leaf<K, V> *left,
+    static K non_leaf_split_left(bplus_non_leaf<K, V> *node, bplus_non_leaf<K, V> *left,
                                    bplus_node<K, V> *l_ch, bplus_node<K, V> *r_ch, K key, int insert)
     {
         int i, j, order = node->count;
@@ -356,7 +359,7 @@ private:
         return split_key;
     }
 
-    static int non_leaf_split_right1(bplus_non_leaf<K, V> *node, bplus_non_leaf<K, V> *right,
+    static K non_leaf_split_right1(bplus_non_leaf<K, V> *node, bplus_non_leaf<K, V> *right,
                                      bplus_node<K, V> *l_ch, bplus_node<K, V> *r_ch, K key, int insert)
     {
         int i, j, order = node->count;
@@ -388,7 +391,7 @@ private:
         return split_key;
     }
 
-    static int non_leaf_split_right2(bplus_non_leaf<K, V> *node, bplus_non_leaf<K, V> *right,
+    static K non_leaf_split_right2(bplus_non_leaf<K, V> *node, bplus_non_leaf<K, V> *right,
                                      bplus_node<K, V> *l_ch, bplus_node<K, V> *r_ch, K key, int insert)
     {
         int i, j, order = node->count;
@@ -1020,13 +1023,8 @@ public:
     }
 
 public:
-    int search(K key) {
-        V data = bplus_tree_search(this, key);
-        if (data) {
-            return data;
-        } else {
-            return -1;
-        }
+    std::optional<V> search(K key) {
+        return bplus_tree_search(this, key);
     }
 
     int insert(K key, V data) {
