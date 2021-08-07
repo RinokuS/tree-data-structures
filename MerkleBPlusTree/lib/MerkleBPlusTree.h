@@ -2,7 +2,7 @@
 
 #include <string>
 #include <vector>
-//#include "cryptopp/blake2.h"
+#include "cryptopp/blake2.h"
 
 #ifndef _BPLUS_TREE_H
 #define _BPLUS_TREE_H
@@ -189,48 +189,34 @@ static inline int is_leaf(bplus_node<K, V> *node)
 
 template <typename K, typename V>
 static inline void hash_leaf(bplus_leaf<K, V> *node) {
-//    CryptoPP::BLAKE2b blake_hasher;
-//    std::string helper;
-//
-//    for (int i = 0; i < node->count; ++i) {
-//        helper = std::to_string(node->data[i]);
-//        unsigned char buf[helper.size()];
-//        strcpy((char*) buf, helper.c_str());
-//
-//        blake_hasher.Update(buf, helper.size());
-//    }
-//
-//    node->hash.resize(blake_hasher.DigestSize());
-//    blake_hasher.Final((unsigned char*) &node->hash[0]);
-    std::string helper = std::to_string(node->count);
+    CryptoPP::BLAKE2b blake_hasher;
+    std::string helper;
 
     for (int i = 0; i < node->count; ++i) {
-        helper += std::to_string(node->data[i]);
+        helper = std::to_string(node->data[i]);
+        unsigned char buf[helper.size()];
+        strcpy((char*) buf, helper.c_str());
+
+        blake_hasher.Update(buf, helper.size());
     }
 
-    node->hash = helper;
+    node->hash.resize(blake_hasher.DigestSize());
+    blake_hasher.Final((unsigned char*) &node->hash[0]);
 }
 
 template <typename K, typename V>
 static inline void hash_non_leaf(bplus_non_leaf<K, V> *node) {
-//    CryptoPP::BLAKE2b blake_hasher;
-//
-//    for (int i = 0; i < node->count; ++i) {
-//        unsigned char buf[node->sub_ptr[i]->hash.size()];
-//        strcpy((char*) buf, node->sub_ptr[i]->hash.c_str());
-//
-//        blake_hasher.Update(buf, node->sub_ptr[i]->hash.size());
-//    }
-//
-//    node->hash.resize(blake_hasher.DigestSize());
-//    blake_hasher.Final((unsigned char*) &node->hash[0]);
-    std::string helper = std::to_string(node->count);
+    CryptoPP::BLAKE2b blake_hasher;
 
     for (int i = 0; i < node->count; ++i) {
-        helper += node->sub_ptr[i]->hash;
+        unsigned char buf[node->sub_ptr[i]->hash.size()];
+        strcpy((char*) buf, node->sub_ptr[i]->hash.c_str());
+
+        blake_hasher.Update(buf, node->sub_ptr[i]->hash.size());
     }
 
-    node->hash = helper;
+    node->hash.resize(blake_hasher.DigestSize());
+    blake_hasher.Final((unsigned char*) &node->hash[0]);
 }
 
 template <typename K>
