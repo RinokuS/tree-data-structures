@@ -130,33 +130,34 @@ private:
 
 private:
     static inline void hash_leaf(bplus_leaf<K, V> *node) {
-    CryptoPP::BLAKE2b blake_hasher;
-    std::string helper;
+        CryptoPP::BLAKE2b blake_hasher;
+        std::string helper;
 
-    for (int i = 0; i < node->count; ++i) {
-        helper = std::to_string(node->data[i]);
-        unsigned char buf[helper.size()];
-        strcpy((char*) buf, helper.c_str());
+        for (int i = 0; i < node->count; ++i) {
+            helper = std::to_string(node->key[i]) +
+                  std::to_string(node->data[i]);
+            unsigned char buf[helper.size()];
+            strcpy((char*) buf, helper.c_str());
 
-        blake_hasher.Update(buf, helper.size());
-    }
+            blake_hasher.Update(buf, helper.size());
+        }
 
-    node->hash.resize(blake_hasher.DigestSize());
-    blake_hasher.Final((unsigned char*) &node->hash[0]);
+        node->hash.resize(blake_hasher.DigestSize());
+        blake_hasher.Final((unsigned char*) &node->hash[0]);
     }
 
     static inline void hash_non_leaf(bplus_non_leaf<K, V> *node) {
-    CryptoPP::BLAKE2b blake_hasher;
+        CryptoPP::BLAKE2b blake_hasher;
 
-    for (int i = 0; i < node->count; ++i) {
-        unsigned char buf[node->sub_ptr[i]->hash.size()];
-        strcpy((char*) buf, node->sub_ptr[i]->hash.c_str());
+        for (int i = 0; i < node->count; ++i) {
+            unsigned char buf[node->sub_ptr[i]->hash.size()];
+            strcpy((char*) buf, node->sub_ptr[i]->hash.c_str());
 
-        blake_hasher.Update(buf, node->sub_ptr[i]->hash.size());
-    }
+            blake_hasher.Update(buf, node->sub_ptr[i]->hash.size());
+        }
 
-    node->hash.resize(blake_hasher.DigestSize());
-    blake_hasher.Final((unsigned char*) &node->hash[0]);
+        node->hash.resize(blake_hasher.DigestSize());
+        blake_hasher.Final((unsigned char*) &node->hash[0]);
     }
 
     static inline void get_nodes_diff(change_set &different_nodes,
