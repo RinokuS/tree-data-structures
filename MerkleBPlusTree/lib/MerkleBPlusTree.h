@@ -99,6 +99,7 @@ struct bplus_node {
     list_head link;
     int count;
     char hash[SHA256_DIGEST_LENGTH];
+    virtual char* get_hash() = 0;
 };
 
 template <typename K, typename V>
@@ -110,12 +111,44 @@ template <typename K, typename V>
 struct bplus_non_leaf : public bplus_node<K, V> {
     K key[BPLUS_MAX_ORDER - 1];
     bplus_node<K, V> *sub_ptr[BPLUS_MAX_ORDER];
+
+    char* get_hash() override {
+        SHA256_CTX context;
+        SHA256_Init(&context);
+
+        for (int i = 0; i < this->count; ++i) {
+            unsigned char buf[SHA256_DIGEST_LENGTH];
+            strcpy((char*) buf, sub_ptr[i]->get_hash());
+
+            SHA256_Update(&context, buf, SHA256_DIGEST_LENGTH);
+        }
+
+        SHA256_Final((unsigned char*) this->hash, &context);
+    }
 };
 
 template <typename K, typename V>
 struct bplus_leaf : public bplus_node<K, V> {
     K key[BPLUS_MAX_ENTRIES];
     V data[BPLUS_MAX_ENTRIES];
+
+    char* get_hash() override {
+        SHA256_CTX context;
+        SHA256_Init(&context);
+
+        std::string helper;
+
+        for (int i = 0; i < this->count; ++i) {
+            helper = std::to_string(key[i]) +
+                     std::to_string(data[i]);
+            unsigned char buf[helper.size()];
+            strcpy((char*) buf, helper.c_str());
+
+            SHA256_Update(&context, buf, helper.size());
+        }
+
+        SHA256_Final((unsigned char*) this->hash, &context);
+    }
 };
 
 template <typename K, typename V>
@@ -486,13 +519,9 @@ private:
                 result = parent_node_build(tree, (bplus_node<K, V> *)node,
                                            (bplus_node<K, V> *)sibling, split_key, level);
             }
-            // hash
-            hash_non_leaf(sibling);
         } else {
             non_leaf_simple_insert(node, l_ch, r_ch, key, insert);
         }
-        // hash
-        hash_non_leaf(node);
 
         return result;
     }
@@ -604,18 +633,10 @@ private:
                 result = parent_node_build(tree, (bplus_node<K, V> *)leaf,
                                            (bplus_node<K, V> *)sibling, sibling->key[0], 0);
             }
-            // hash
-            hash_leaf(sibling);
         } else {
             leaf_simple_insert(leaf, key, data, insert);
         }
-        // hash
-        hash_leaf(leaf);
-        bplus_non_leaf<K, V> *parent = leaf->parent;
-        while (parent) { // update hash of entire changed subtree
-            hash_non_leaf(parent);
-            parent = parent->parent;
-        }
+
         return result;
     }
 
@@ -642,8 +663,6 @@ private:
         bplus_leaf<K, V> *root = leaf_new();
         root->key[0] = key;
         root->data[0] = data;
-        // hash
-        hash_leaf(root);
 
         root->count = 1;
         tree->root = (bplus_node<K, V> *)root;
@@ -904,7 +923,6 @@ private:
     static int leaf_remove(bplus_tree<K, V> *tree, bplus_leaf<K, V> *leaf, K key)
     {
         int remove = key_binary_search(leaf->key, leaf->count, key);
-        bplus_leaf<K, V> *node_to_upd_hash = leaf;
         if (remove < 0) {
             /* Not exist */
             return -1;
@@ -921,10 +939,8 @@ private:
                 if (leaf_sibling_select(l_sib, r_sib, parent, i) == LEFT_SIBLING) {
                     if (l_sib->count > (tree->entries + 1) / 2) {
                         leaf_shift_from_left(leaf, l_sib, i, remove);
-                        hash_leaf(l_sib);
                     } else {
                         leaf_merge_into_left(leaf, l_sib, remove);
-                        node_to_upd_hash = l_sib; // if we deleted our leaf, we should start update from merged sib
                         /* trace upwards */
                         non_leaf_remove(tree, parent, i);
                     }
@@ -933,7 +949,6 @@ private:
                     leaf_simple_remove(leaf, remove);
                     if (r_sib->count > (tree->entries + 1) / 2) {
                         leaf_shift_from_right(leaf, r_sib, i + 1);
-                        hash_leaf(r_sib);
                     } else {
                         leaf_merge_from_right(leaf, r_sib);
                         /* trace upwards */
@@ -953,13 +968,6 @@ private:
             }
         } else {
             leaf_simple_remove(leaf, remove);
-        }
-        // hash
-        bplus_non_leaf<K, V> *parent = node_to_upd_hash->parent;
-        hash_leaf(node_to_upd_hash);
-        while (parent) {
-            hash_non_leaf(parent);
-            parent = parent->parent;
         }
 
         return 0;
