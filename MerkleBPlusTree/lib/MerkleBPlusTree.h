@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 #include <optional>
-#include "cryptopp/blake2.h"
+#include "openssl/sha.h"
 
 #ifndef _BPLUS_TREE_H
 #define _BPLUS_TREE_H
@@ -95,15 +95,15 @@ template <typename K, typename V>
 struct bplus_node {
     int type;
     int parent_key_idx;
-    std::string hash;
     bplus_non_leaf<K, V> *parent;
     list_head link;
     int count;
+    char hash[SHA256_DIGEST_LENGTH];
 };
 
 template <typename K, typename V>
 bool operator==(const bplus_node<K, V> &a, const bplus_node<K, V> &b) {
-    return a.hash == b.hash;
+    return strcmp(a.hash, b.hash) == 0;
 }
 
 template <typename K, typename V>
@@ -130,7 +130,9 @@ private:
 
 private:
     static inline void hash_leaf(bplus_leaf<K, V> *node) {
-        CryptoPP::BLAKE2b blake_hasher;
+        SHA256_CTX context;
+        SHA256_Init(&context);
+
         std::string helper;
 
         for (int i = 0; i < node->count; ++i) {
@@ -139,25 +141,24 @@ private:
             unsigned char buf[helper.size()];
             strcpy((char*) buf, helper.c_str());
 
-            blake_hasher.Update(buf, helper.size());
+            SHA256_Update(&context, buf, helper.size());
         }
 
-        node->hash.resize(blake_hasher.DigestSize());
-        blake_hasher.Final((unsigned char*) &node->hash[0]);
+        SHA256_Final((unsigned char*) node->hash, &context);
     }
 
     static inline void hash_non_leaf(bplus_non_leaf<K, V> *node) {
-        CryptoPP::BLAKE2b blake_hasher;
+        SHA256_CTX context;
+        SHA256_Init(&context);
 
         for (int i = 0; i < node->count; ++i) {
-            unsigned char buf[node->sub_ptr[i]->hash.size()];
-            strcpy((char*) buf, node->sub_ptr[i]->hash.c_str());
+            unsigned char buf[strlen(node->sub_ptr[i]->hash)];
+            strcpy((char*) buf, node->sub_ptr[i]->hash);
 
-            blake_hasher.Update(buf, node->sub_ptr[i]->hash.size());
+            SHA256_Update(&context, buf, strlen(node->sub_ptr[i]->hash));
         }
 
-        node->hash.resize(blake_hasher.DigestSize());
-        blake_hasher.Final((unsigned char*) &node->hash[0]);
+        SHA256_Final((unsigned char*) node->hash, &context);
     }
 
     static inline void get_nodes_diff(change_set &different_nodes,
@@ -969,13 +970,13 @@ private:
         int i;
         if (is_leaf(node)) {
             auto leaf = (bplus_leaf<K, V> *)node;
-            printf("leaf (%s):", leaf->hash.c_str());
+            printf("leaf (%s):", leaf->hash);
             for (i = 0; i < leaf->count; i++) {
                 printf(" %d", leaf->key[i]);
             }
         } else {
             auto non_leaf = (bplus_non_leaf<K, V> *)node;
-            printf("node (%s):", non_leaf->hash.c_str());
+            printf("node (%s):", non_leaf->hash);
             for (i = 0; i < non_leaf->count - 1; i++) {
                 printf(" %d", non_leaf->key[i]);
             }

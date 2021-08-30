@@ -150,16 +150,16 @@ static void bplus_tree_hash_test() {
         tree_a->insert(i, i);
         tree_b->insert(i, i);
 
-        assert(tree_a->root->hash == tree_b->root->hash);
+        assert(strcmp(tree_a->root->hash, tree_b->root->hash) == 0);
     }
 
     for (i = 1; i < max_key; i++) {
         tree_a->remove(i);
         tree_b->remove(i);
 
-        assert(tree_a->root->hash == tree_b->root->hash);
+        assert(strcmp(tree_a->root->hash, tree_b->root->hash) == 0);
     }
-    assert(tree_a->root->hash == tree_b->root->hash);
+    assert(strcmp(tree_a->root->hash, tree_b->root->hash) == 0);
 
     for (i = 1; i <= max_key; i++) {
         tree_a->insert(i, i);
@@ -167,7 +167,7 @@ static void bplus_tree_hash_test() {
     for (i = max_key; i > 0; i--) {
         tree_b->insert(i, i);
     }
-    assert(tree_a->root->hash != tree_b->root->hash);
+    assert(strcmp(tree_a->root->hash, tree_b->root->hash) != 0);
 
     delete tree_a;
     delete tree_b;
