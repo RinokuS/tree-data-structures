@@ -1,4 +1,6 @@
 #include <iostream>
+#include <fstream>
+#include <chrono>
 #include "lib/MerkleBPlusTree.h"
 
 struct bplus_tree_config {
@@ -230,10 +232,66 @@ static void bplus_tree_normal_test()
     delete tree;
 }
 
+static void bplus_tree_time_test_add() {
+    bplus_tree<int, int> *tree;
+    bplus_tree_config config{7, 10};
+
+    fprintf(stderr, "\n>>> B+tree add time test.\n");
+
+    /* Init b+tree */
+    tree = bplus_tree<int, int>::init_tree(config.order, config.entries);
+
+    std::ofstream os {"time_add2.csv"};
+
+    os << "With update" << '\n';
+
+    auto start = std::chrono::high_resolution_clock::now();
+    for (int i = 1; i <= 10'000'000; i++) {
+        tree->insert(i, i);
+
+        if (i == 1000 || i == 10'000 || i == 100'000 || i == 1'000'000 || i == 2'000'000 ||
+            i == 4'000'000 || i == 6'000'000 || i == 8'000'000 || i == 10'000'000) {
+            os << std::fixed << std::chrono::duration_cast<std::chrono::nanoseconds>(
+                    std::chrono::high_resolution_clock::now() - start).count() * 1e-9 <<
+               std::setprecision(9) << '\n';
+        }
+    }
+}
+
+static void bplus_tree_time_test_check_hash() {
+    bplus_tree<int, int> *tree;
+    bplus_tree_config config{7, 10};
+
+    fprintf(stderr, "\n>>> B+tree check hash time test.\n");
+
+    /* Init b+tree */
+    tree = bplus_tree<int, int>::init_tree(config.order, config.entries);
+
+    std::ofstream os {"time_check2.csv"};
+
+    os << "With update" << '\n';
+
+    for (int i = 1; i <= 10'000'000; i++) {
+        tree->insert(i, i);
+
+        if (i == 1000 || i == 10'000 || i == 100'000 || i == 1'000'000 || i == 2'000'000 ||
+            i == 4'000'000 || i == 6'000'000 || i == 8'000'000 || i == 10'000'000) {
+            auto start = std::chrono::high_resolution_clock::now();
+            auto tree_hash = tree->root->get_hash();
+            os << std::fixed << std::chrono::duration_cast<std::chrono::nanoseconds>(
+                    std::chrono::high_resolution_clock::now() - start).count() * 1e-9 <<
+               std::setprecision(9) << '\n';
+        }
+    }
+}
+
 int main() {
     bplus_tree_normal_test();
-    bplus_tree_hash_test();
-    get_change_set_test();
+    //bplus_tree_hash_test();
+    //get_change_set_test();
+
+    bplus_tree_time_test_add();
+    bplus_tree_time_test_check_hash();
 
     return 0;
 }

@@ -124,6 +124,7 @@ struct bplus_non_leaf : public bplus_node<K, V> {
         }
 
         SHA256_Final((unsigned char*) this->hash, &context);
+        return this->hash;
     }
 };
 
@@ -148,6 +149,7 @@ struct bplus_leaf : public bplus_node<K, V> {
         }
 
         SHA256_Final((unsigned char*) this->hash, &context);
+        return this->hash;
     }
 };
 
